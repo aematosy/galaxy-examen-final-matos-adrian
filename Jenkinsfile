@@ -18,7 +18,6 @@ pipeline {
       }
       steps {
         script {
-          sh 'java -version'
           sh 'mvn -version'
           sh 'mvn verify'
           sh 'mvn clean package'
@@ -70,8 +69,6 @@ pipeline {
                       flatten: true,
                       selector: specific("${BUILD_NUMBER}"),
                       target: 'target'
-        sh 'docker --version'
-        sh 'docker-compose --version'
         sh 'docker-compose build'
       }
     }
@@ -98,7 +95,7 @@ pipeline {
         script {
           sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'
           sh 'docker rm -f msmicroservice'
-          sh 'docker run -d --name msmicroservice -p 8070:8080 ${DOCKER_CREDS_USR}/msmicroservice:${BUILD_NUMBER}'
+          sh 'docker run -d -p 8081:8080 --name galaxyLabMaven ${DOCKER_CREDS_USR}/msmicroservice:$BUILD_NUMBER'
           sh 'docker logout'
         }
       }
